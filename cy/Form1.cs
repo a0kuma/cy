@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.Distributions;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,9 +8,11 @@ using System.Data.Common;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace cy
 {
@@ -47,7 +50,7 @@ namespace cy
                             dr[i] = rows[i];
                         }
                         dataTable.Rows.Add(dr);
-                        mainTableHeight.Text=(Int64.Parse(mainTableHeight.Text)+1).ToString();
+                        mainTableHeight.Text = (Int64.Parse(mainTableHeight.Text) + 1).ToString();
                     }
                 }
 
@@ -69,7 +72,7 @@ namespace cy
                 string cellValue = cc.Cells[ci].Value.ToString();
                 if (cellValue == "TRUE" || cellValue == "True" || cellValue == "true")
                 {
-                    tmp = toolStripMenuItem3.Checked?1.0:1.0;
+                    tmp = toolStripMenuItem3.Checked ? 1.0 : 1.0;
                 }
                 else if (cellValue == "FALSE" || cellValue == "False" || cellValue == "false")
                 {
@@ -181,13 +184,13 @@ namespace cy
 
                 dataTable.Rows.Add(row);
 
-               
+
             }
 
             dataGridView2.DataSource = dataTable;
         }
 
-        private void LogError(Exception ex, string val="none")
+        private void LogError(Exception ex, string val = "none")
         {
             string logFilePath = "error_log.txt";
             using (StreamWriter sw = new StreamWriter(logFilePath, true))
@@ -228,7 +231,7 @@ namespace cy
 
         private void rowTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            toolStripStatusLabel1.Text= dataGridView1.Rows[0].Cells[3].Value.ToString();
+            toolStripStatusLabel1.Text = dataGridView1.Rows[0].Cells[3].Value.ToString();
         }
 
         private void toolStripStatusLabel1_Click(object sender, EventArgs e)
@@ -266,7 +269,8 @@ namespace cy
                         {
                             cell.Value = (toolStripMenuItem3.Checked ? -1.0 : 0.0).ToString();
                         }
-                        else if (IsValueInTreeView(cell.OwningColumn.Name)&&(!double.TryParse(cellValue,out dumb))){//cellValue)) {
+                        else if (IsValueInTreeView(cell.OwningColumn.Name) && (!double.TryParse(cellValue, out dumb)))
+                        {//cellValue)) {
                             cell.Value = t2v(cellValue, cell.OwningColumn.Name).ToString();
                         }
                     }
@@ -277,10 +281,10 @@ namespace cy
         {
             //foreach (TreeNode node in treeView1.Nodes)
             //{
-                if (treeView1.Nodes.Cast<TreeNode>().Any(n => n.Text == value))
-                {
-                    return true;
-                }
+            if (treeView1.Nodes.Cast<TreeNode>().Any(n => n.Text == value))
+            {
+                return true;
+            }
             //}
             return false;
         }
@@ -358,8 +362,9 @@ namespace cy
                 // Remove the column from dataGridView2
                 dataGridView1.Columns.Remove(columnName);
             }
-            else { 
-            toolStripStatusLabel1.Text = "Column not found";
+            else
+            {
+                toolStripStatusLabel1.Text = "Column not found";
             }
         }
 
@@ -456,7 +461,7 @@ namespace cy
                         {
                             if (row2.Cells["Name"].Value != null && row2.Cells["Name"].Value.ToString() == cell.OwningColumn.Name)
                             {
-                                cell.Value = row2.Cells["Sample Mean"].Value;   
+                                cell.Value = row2.Cells["Sample Mean"].Value;
                             }
                         }
                     }
@@ -468,7 +473,7 @@ namespace cy
         {
             foreach (DataGridViewRow row in dataGridView2.Rows)
             {
-                if (row.Cells["DataType"].Value != null&& row.Cells["DataType"].Value.ToString() == "String")
+                if (row.Cells["DataType"].Value != null && row.Cells["DataType"].Value.ToString() == "String")
                 {
                     string columnName = row.Cells["Name"].Value.ToString();
                     List<double> columnData = new List<double>();
@@ -538,13 +543,18 @@ namespace cy
 
         private void doARowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /*on datagridview2 sel. row [Name], datagridview1 col. name for each cell do: */
             if (dataGridView2.SelectedRows.Count > 0)
             {
                 string current = dataGridView2.SelectedRows[0].Cells["Name"].Value.ToString();
+                bool columnExists = dataGridView1.Columns.Cast<DataGridViewColumn>().Any(col => col.Name == current);
+                if (!columnExists)
+                {
+                    MessageBox.Show($"Column '{current}' does not exist in dataGridView1.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
-                    if (!row.IsNewRow&& row.Cells[current]!=null)
+                    if (!row.IsNewRow && row.Cells[current] != null)
                     {
                         if (row.Cells[current].Value != null && !String.IsNullOrEmpty(row.Cells[current].Value.ToString()))
                         {
@@ -554,7 +564,7 @@ namespace cy
                             double SampleMean = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["Sample Mean"].Value.ToString());
                             double Median = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["Median"].Value.ToString());
                             double Mode = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["Mode"].Value.ToString());
-                            double SD= double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["SD"].Value.ToString());
+                            double SD = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["SD"].Value.ToString());
 
                             double newValue = min + (max - min) * Math.Abs(value - min) / (max - min);
                             row.Cells[current].Value = zScoreToolStripMenuItem.Checked ?
@@ -574,8 +584,8 @@ namespace cy
                 double Mode,
                      double SD)
         {
-            double z=(value - SampleMean) / SD;
-           return ZScoreCDF(z);
+            double z = (value - SampleMean) / SD;
+            return ZScoreCDF(z);
         }
 
         private double ZScoreCDF(double z)
@@ -617,24 +627,259 @@ namespace cy
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            if (outputLocSetToTmpToolStripMenuItem.Checked)
             {
-                string filePath = saveFileDialog.FileName;
+                string filePath = Path.GetTempPath() + "libsvmHKDKtrain.txt";
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
                 ExportDataGridView3ToTxt(filePath);
+            }
+            else
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    ExportDataGridView3ToTxt(filePath);
+                }
             }
         }
 
         private void exportValToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            if (outputLocSetToTmpToolStripMenuItem.Checked)
             {
-                string filePath = saveFileDialog.FileName;
-                ExportDataGridView3ToTxt(filePath,true);
+                string filePath = Path.GetTempPath() + "libsvmHKDKval.txt";
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+                ExportDataGridView3ToTxt(filePath, true);
             }
+            else
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    ExportDataGridView3ToTxt(filePath, true);
+                }
+            }
+        }
+
+        private void removeColumnToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridView2.SelectedRows.Count > 0)
+            {
+                string current = dataGridView2.SelectedRows[0].Cells["Name"].Value.ToString();
+                bool columnExists = dataGridView1.Columns.Cast<DataGridViewColumn>().Any(col => col.Name == current);
+                if (!columnExists)
+                {
+                    MessageBox.Show($"Column '{current}' does not exist in dataGridView1.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                dataGridView1.Columns.Remove(current);
+
+            }
+
+        }
+
+        private void toolStripStatusLabel3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void setMeanRangeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string input = Form2.Show("Please enter a number:", "Enter number", "1");
+            if (double.TryParse(input, out double result))
+            {
+                toolStripStatusLabel4.Text = result.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid number.", "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void doAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row0 in dataGridView2.Rows)
+            {
+                if ((!row0.IsNewRow) &&(Math.Abs(Convert.ToDouble(row0.Cells["Sample Mean"].Value)) > Convert.ToDouble(toolStripStatusLabel4.Text)))
+                {
+                    string current = row0.Cells["Name"].Value.ToString();
+                    bool columnExists = dataGridView1.Columns.Cast<DataGridViewColumn>().Any(col => col.Name == current);
+                    if (!columnExists)
+                    {
+                        toolStripStatusLabel1.Text = $"Column '{current}' does not exist in dataGridView1.";
+                        continue;
+                    }
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        if (!row.IsNewRow && row.Cells[current] != null)
+                        {
+                            if (row.Cells[current].Value != null && !String.IsNullOrEmpty(row.Cells[current].Value.ToString()))
+                            {
+                                double value = double.Parse(row.Cells[current].Value.ToString());
+                                double min = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["Min"].Value.ToString());
+                                double max = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["Max"].Value.ToString());
+                                double SampleMean = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["Sample Mean"].Value.ToString());
+                                double Median = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["Median"].Value.ToString());
+                                double Mode = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["Mode"].Value.ToString());
+                                double SD = double.Parse(dataGridView2.Rows.Cast<DataGridViewRow>().Where(r => r.Cells["Name"].Value.ToString() == current).First().Cells["SD"].Value.ToString());
+
+                                double newValue = min + (max - min) * Math.Abs(value - min) / (max - min);
+                                row.Cells[current].Value = zScoreToolStripMenuItem.Checked ?
+                                    zScore(value, min, max, SampleMean, Median, Mode, SD)
+                                    : newValue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void installToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WriteEmbeddedZipToTemp();
+        }
+
+        private void WriteEmbeddedZipToTemp()
+        {
+            string resourceName = "cy.svm3windows35.zip";
+            string tempFilePath = Path.Combine(Path.GetTempPath(), "svm3windows35.zip");
+
+            //if file exists, delete it
+            if (File.Exists(tempFilePath))
+            {
+                File.Delete(tempFilePath);
+            }
+
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            {
+                if (stream == null)
+                {
+                    MessageBox.Show("Embedded ZIP file not found.");
+                    return;
+                }
+
+                using (FileStream fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
+                {
+                    stream.CopyTo(fileStream);
+                }
+            }
+
+            MessageBox.Show($"The ZIP file has been written to the temporary directory:{tempFilePath}");
+
+            /*remove if htese name exist
+            ------       2024/12/8  下午 05:08         291840 libsvm.dll
+------       2024/12/8  下午 05:08          14848 libsvmread.mexw64
+------       2024/12/8  下午 05:08          13824 libsvmwrite.mexw64
+------       2024/12/8  下午 05:08         243712 svm-predict.exe
+------       2024/12/8  下午 05:08         191488 svm-scale.exe
+------       2024/12/8  下午 05:08         255488 svm-toy.exe
+------       2024/12/8  下午 05:08         282624 svm-train.exe
+------       2024/12/8  下午 05:08          29184 svmpredict.mexw64
+------       2024/12/8  下午 05:08          72704 svmtrain.mexw64*/
+            string tempPath = Path.GetTempPath();
+            string[] files = { "libsvm.dll", "libsvmread.mexw64", "libsvmwrite.mexw64", "svm-predict.exe", "svm-scale.exe", "svm-toy.exe", "svm-train.exe", "svmpredict.mexw64", "svmtrain.mexw64" };
+            foreach (string file in files)
+            {
+                string filePath = Path.Combine(tempPath, file);
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+
+            //unzip the file
+            System.IO.Compression.ZipFile.ExtractToDirectory(tempFilePath, Path.GetTempPath());
+        }
+        private string RunProcess(string exePath, string arguments)
+        {
+            try
+            {
+                // 初始化進程
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                process.StartInfo.FileName = exePath;
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = false;
+
+                // 啟動進程
+                process.Start();
+
+                // 讀取輸出
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+                if (error != null) {
+                    MessageBox.Show(error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                process.WaitForExit();
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                LogError(ex, "Error running process");
+                return string.Empty;
+            }
+        }
+        private void runToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //set path to tmp, run "svm-train.exe libsvmHKDKtrain.txt", stdout save to string, show in messagebox
+            string tempPath = Path.GetTempPath();
+            string trainFilePath = Path.Combine(tempPath, "libsvmHKDKtrain.txt");
+            string valFilePath = Path.Combine(tempPath, "libsvmHKDKval.txt");
+            if (!File.Exists(trainFilePath))
+            {
+                MessageBox.Show("Please load a training file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (!File.Exists(valFilePath))
+            {
+                MessageBox.Show("Please load a val file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            string exePath = Path.Combine(tempPath, "svm-train.exe");
+            string exePathVal = Path.Combine(tempPath, "svm-predict.exe");
+            string modelPath = Path.Combine(tempPath, "libsvmHKDKtrain.model");
+            string valFilePathSol = Path.Combine(tempPath, "libsvmHKDKval.txt.predict");
+            string ansCsv = Path.Combine(tempPath, "ansCsv.csv");
+            if (File.Exists(ansCsv))
+            {
+                File.Delete(ansCsv);
+            }
+           
+            if (File.Exists(modelPath))
+            {
+                File.Delete(modelPath);
+            }
+            if (File.Exists(valFilePathSol))
+            {
+                File.Delete(valFilePathSol);
+            }
+            
+            string output = RunProcess(exePath, $"-g 0.01 {trainFilePath} {modelPath}");//-c -k
+            MessageBox.Show($"{output}", "Output", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string outputVal = RunProcess(exePathVal, $"{valFilePath} {modelPath} {valFilePathSol}");
+            MessageBox.Show($"{outputVal}", "Output", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (!File.Exists(modelPath))
+            {
+                MessageBox.Show("internal error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            FileProcessor.ProcessFile(valFilePathSol, ansCsv);
+            //remove trainFilePath valFilePath exePath exePathVal modelPath valFilePathSol
+            
         }
     }
 }
