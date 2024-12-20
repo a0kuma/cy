@@ -60,6 +60,9 @@
             this.libsvmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.installToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAndRunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runWithRandomDispToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runWithOutOneLoopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.noteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.note1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,10 +110,10 @@
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel3,
             this.toolStripStatusLabel4});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 425);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 335);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 13, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(977, 25);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(733, 25);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -160,8 +163,8 @@
             this.debugToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(977, 28);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(733, 28);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -345,7 +348,10 @@
             // 
             this.libsvmToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.installToolStripMenuItem,
-            this.runToolStripMenuItem});
+            this.runToolStripMenuItem,
+            this.exportAndRunToolStripMenuItem,
+            this.runWithRandomDispToolStripMenuItem,
+            this.runWithOutOneLoopToolStripMenuItem});
             this.libsvmToolStripMenuItem.Name = "libsvmToolStripMenuItem";
             this.libsvmToolStripMenuItem.Size = new System.Drawing.Size(69, 24);
             this.libsvmToolStripMenuItem.Text = "libsvm";
@@ -353,16 +359,37 @@
             // installToolStripMenuItem
             // 
             this.installToolStripMenuItem.Name = "installToolStripMenuItem";
-            this.installToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.installToolStripMenuItem.Size = new System.Drawing.Size(244, 26);
             this.installToolStripMenuItem.Text = "install";
             this.installToolStripMenuItem.Click += new System.EventHandler(this.installToolStripMenuItem_Click);
             // 
             // runToolStripMenuItem
             // 
             this.runToolStripMenuItem.Name = "runToolStripMenuItem";
-            this.runToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(244, 26);
             this.runToolStripMenuItem.Text = "run";
             this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
+            // 
+            // exportAndRunToolStripMenuItem
+            // 
+            this.exportAndRunToolStripMenuItem.Name = "exportAndRunToolStripMenuItem";
+            this.exportAndRunToolStripMenuItem.Size = new System.Drawing.Size(244, 26);
+            this.exportAndRunToolStripMenuItem.Text = "export and run";
+            this.exportAndRunToolStripMenuItem.Click += new System.EventHandler(this.exportAndRunToolStripMenuItem_Click);
+            // 
+            // runWithRandomDispToolStripMenuItem
+            // 
+            this.runWithRandomDispToolStripMenuItem.Name = "runWithRandomDispToolStripMenuItem";
+            this.runWithRandomDispToolStripMenuItem.Size = new System.Drawing.Size(244, 26);
+            this.runWithRandomDispToolStripMenuItem.Text = "run with random disp";
+            this.runWithRandomDispToolStripMenuItem.Click += new System.EventHandler(this.runWithRandomDispToolStripMenuItem_Click);
+            // 
+            // runWithOutOneLoopToolStripMenuItem
+            // 
+            this.runWithOutOneLoopToolStripMenuItem.Name = "runWithOutOneLoopToolStripMenuItem";
+            this.runWithOutOneLoopToolStripMenuItem.Size = new System.Drawing.Size(244, 26);
+            this.runWithOutOneLoopToolStripMenuItem.Text = "run with out one loop";
+            this.runWithOutOneLoopToolStripMenuItem.Click += new System.EventHandler(this.runWithOutOneLoopToolStripMenuItem_Click);
             // 
             // noteToolStripMenuItem
             // 
@@ -375,7 +402,7 @@
             // note1ToolStripMenuItem
             // 
             this.note1ToolStripMenuItem.Name = "note1ToolStripMenuItem";
-            this.note1ToolStripMenuItem.Size = new System.Drawing.Size(132, 26);
+            this.note1ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.note1ToolStripMenuItem.Text = "note1";
             this.note1ToolStripMenuItem.Click += new System.EventHandler(this.note1ToolStripMenuItem_Click);
             // 
@@ -431,18 +458,18 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 27;
-            this.dataGridView1.Size = new System.Drawing.Size(651, 397);
+            this.dataGridView1.Size = new System.Drawing.Size(488, 307);
             this.dataGridView1.TabIndex = 2;
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 28);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(2);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -452,15 +479,16 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(977, 397);
-            this.splitContainer1.SplitterDistance = 651;
+            this.splitContainer1.Size = new System.Drawing.Size(733, 307);
+            this.splitContainer1.SplitterDistance = 488;
+            this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding(2);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -471,8 +499,9 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer4);
-            this.splitContainer2.Size = new System.Drawing.Size(322, 397);
-            this.splitContainer2.SplitterDistance = 155;
+            this.splitContainer2.Size = new System.Drawing.Size(242, 307);
+            this.splitContainer2.SplitterDistance = 119;
+            this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 0;
             // 
             // dataGridView2
@@ -480,34 +509,32 @@
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView2.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridView2.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 51;
             this.dataGridView2.RowTemplate.Height = 27;
-            this.dataGridView2.Size = new System.Drawing.Size(322, 155);
+            this.dataGridView2.Size = new System.Drawing.Size(242, 119);
             this.dataGridView2.TabIndex = 0;
             // 
             // splitContainer4
             // 
             this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer4.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.splitContainer4.Name = "splitContainer4";
             this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splitContainer4.Panel1
             // 
             this.splitContainer4.Panel1.Controls.Add(this.splitContainer3);
-            this.splitContainer4.Size = new System.Drawing.Size(322, 238);
-            this.splitContainer4.SplitterDistance = 119;
-            this.splitContainer4.SplitterWidth = 5;
+            this.splitContainer4.Size = new System.Drawing.Size(242, 185);
+            this.splitContainer4.SplitterDistance = 92;
             this.splitContainer4.TabIndex = 2;
             // 
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer3.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.splitContainer3.Margin = new System.Windows.Forms.Padding(2);
             this.splitContainer3.Name = "splitContainer3";
             // 
             // splitContainer3.Panel1
@@ -517,17 +544,18 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.dataGridView3);
-            this.splitContainer3.Size = new System.Drawing.Size(322, 119);
-            this.splitContainer3.SplitterDistance = 163;
+            this.splitContainer3.Size = new System.Drawing.Size(242, 92);
+            this.splitContainer3.SplitterDistance = 122;
+            this.splitContainer3.SplitterWidth = 3;
             this.splitContainer3.TabIndex = 1;
             // 
             // treeView1
             // 
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
-            this.treeView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.treeView1.Margin = new System.Windows.Forms.Padding(2);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(163, 119);
+            this.treeView1.Size = new System.Drawing.Size(122, 92);
             this.treeView1.TabIndex = 0;
             // 
             // dataGridView3
@@ -535,23 +563,23 @@
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView3.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridView3.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersWidth = 51;
             this.dataGridView3.RowTemplate.Height = 27;
-            this.dataGridView3.Size = new System.Drawing.Size(155, 119);
+            this.dataGridView3.Size = new System.Drawing.Size(117, 92);
             this.dataGridView3.TabIndex = 0;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(977, 450);
+            this.ClientSize = new System.Drawing.Size(733, 360);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.statusStrip1.ResumeLayout(false);
@@ -631,6 +659,9 @@
         private System.Windows.Forms.ToolStripMenuItem installToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer4;
+        private System.Windows.Forms.ToolStripMenuItem runWithOutOneLoopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportAndRunToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runWithRandomDispToolStripMenuItem;
     }
 }
 

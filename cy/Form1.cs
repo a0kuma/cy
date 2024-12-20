@@ -595,7 +595,7 @@ namespace cy
             return normalDist.CumulativeDistribution(z);
         }
 
-        private void ExportDataGridView3ToTxt(string filePath, bool valY = false)
+        private void ExportDataGridView3ToTxt(string filePath, bool valY = false,int disp=-1,bool s=false)//s stand for show debug
         {
             using (StreamWriter sw = new StreamWriter(filePath))
             {
@@ -610,19 +610,47 @@ namespace cy
                         int v = dataGridView1.Rows[i].Cells.Count;
                         for (int j = 0; j < v; j++)
                         {
-                            sw.Write(j.ToString());
-                            sw.Write(":");
-                            sw.Write(dataGridView1.Rows[i].Cells[j].Value.ToString());
-                            if (j < v - 1)
+                            if (disp == -1)
                             {
-                                sw.Write(" ");
+                                sw.Write(j.ToString());
+                                sw.Write(":");
+                                sw.Write(dataGridView1.Rows[i].Cells[j].Value.ToString());
+                                if (j < v - 1)
+                                {
+                                    sw.Write(" ");
+                                }
+                            }
+                            else {
+                                if (j == disp)
+                                {
+                                    //do nothing
+                                }
+                                else if (j > disp)
+                                {
+                                    sw.Write((j-1).ToString());
+                                    sw.Write(":");
+                                    sw.Write(dataGridView1.Rows[i].Cells[j].Value.ToString());
+                                    if (j < v - 1)
+                                    {
+                                        sw.Write(" ");
+                                    }
+                                }
+                                else {
+                                    sw.Write(j.ToString());
+                                    sw.Write(":");
+                                    sw.Write(dataGridView1.Rows[i].Cells[j].Value.ToString());
+                                    if (j < v - 1)
+                                    {
+                                        sw.Write(" ");
+                                    }
+                                }
                             }
                         }
                         sw.WriteLine();
                     }
                 }
             }
-            MessageBox.Show("Data exported to output.txt", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if(s==false)MessageBox.Show("Data exported to output.txt", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
@@ -711,7 +739,7 @@ namespace cy
         {
             foreach (DataGridViewRow row0 in dataGridView2.Rows)
             {
-                if ((!row0.IsNewRow) &&(Math.Abs(Convert.ToDouble(row0.Cells["Sample Mean"].Value)) > Convert.ToDouble(toolStripStatusLabel4.Text)))
+                if ((!row0.IsNewRow) && (Math.Abs(Convert.ToDouble(row0.Cells["Sample Mean"].Value)) > Convert.ToDouble(toolStripStatusLabel4.Text)))
                 {
                     string current = row0.Cells["Name"].Value.ToString();
                     bool columnExists = dataGridView1.Columns.Cast<DataGridViewColumn>().Any(col => col.Name == current);
@@ -801,7 +829,7 @@ namespace cy
             //unzip the file
             System.IO.Compression.ZipFile.ExtractToDirectory(tempFilePath, Path.GetTempPath());
         }
-        private string RunProcess(string exePath, string arguments)
+        private string RunProcess(string exePath, string arguments,bool s=false)
         {
             try
             {
@@ -820,7 +848,7 @@ namespace cy
                 // 讀取輸出
                 string output = process.StandardOutput.ReadToEnd();
                 string error = process.StandardError.ReadToEnd();
-                if (error != null) {
+                if (error != null&&s==false) {
                     MessageBox.Show(error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 process.WaitForExit();
@@ -858,7 +886,7 @@ namespace cy
             {
                 File.Delete(ansCsv);
             }
-           
+
             if (File.Exists(modelPath))
             {
                 File.Delete(modelPath);
@@ -867,7 +895,7 @@ namespace cy
             {
                 File.Delete(valFilePathSol);
             }
-            
+
             string output = RunProcess(exePath, $"-g 0.01 {trainFilePath} {modelPath}");//-c -k
             MessageBox.Show($"{output}", "Output", MessageBoxButtons.OK, MessageBoxIcon.Information);
             string outputVal = RunProcess(exePathVal, $"{valFilePath} {modelPath} {valFilePathSol}");
@@ -879,7 +907,90 @@ namespace cy
             }
             FileProcessor.ProcessFile(valFilePathSol, ansCsv);
             //remove trainFilePath valFilePath exePath exePathVal modelPath valFilePathSol
-            
+
+        }
+
+        private void runWithOutOneLoopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < dataGridView1.Rows[0].Cells.Count; i++) {
+                exportAndRun(i);
+            }
+        }
+
+        private void exportAndRun(int disp = -1)
+        {
+            string filePath = Path.GetTempPath() + $"libsvmHKDKtrain{disp}.txt";
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            ExportDataGridView3ToTxt(filePath, false, disp,true);
+
+            string filePath2 = Path.GetTempPath() + $"libsvmHKDKval{disp}.txt";
+            if (File.Exists(filePath2))
+            {
+                File.Delete(filePath2);
+            }
+            ExportDataGridView3ToTxt(filePath2, true, disp, true);
+
+            string tempPath = Path.GetTempPath();
+            string trainFilePath = Path.Combine(tempPath, $"libsvmHKDKtrain{disp}.txt");
+            string valFilePath = Path.Combine(tempPath, $"libsvmHKDKval{disp}.txt");
+            if (!File.Exists(trainFilePath))
+            {
+                //*MessageBox.Show("Please load a training file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (!File.Exists(valFilePath))
+            {
+                //*MessageBox.Show("Please load a val file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            string exePath = Path.Combine(tempPath, "svm-train.exe");
+            string exePathVal = Path.Combine(tempPath, "svm-predict.exe");
+            string modelPath = Path.Combine(tempPath, $"libsvmHKDKtrain{disp}.model");
+            string valFilePathSol = Path.Combine(tempPath, $"libsvmHKDKval{disp}.txt.predict");
+            string ansCsv = Path.Combine(tempPath, $"ansCsv{disp}.csv");
+            if (File.Exists(ansCsv))
+            {
+                File.Delete(ansCsv);
+            }
+
+            if (File.Exists(modelPath))
+            {
+                File.Delete(modelPath);
+            }
+            if (File.Exists(valFilePathSol))
+            {
+                File.Delete(valFilePathSol);
+            }
+
+            string output = RunProcess(exePath, $"-g 0.01 -c 1.022 {trainFilePath} {modelPath}", true);//-c -k
+            //*MessageBox.Show($"{output}", "Output", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string outputVal = RunProcess(exePathVal, $"{valFilePath} {modelPath} {valFilePathSol}", true);
+            //*MessageBox.Show($"{outputVal}", "Output", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            string logFilePath = Path.Combine(tempPath, $"libsvmDisp{disp}.log");
+            File.WriteAllText(logFilePath, $"{output}\n{outputVal}");
+
+            if (!File.Exists(modelPath))
+            {
+                //*MessageBox.Show("internal error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            FileProcessor.ProcessFile(valFilePathSol, ansCsv);
+        }
+
+        private void exportAndRunToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            exportAndRun(-1);
+        }
+
+        private void runWithRandomDispToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Random random = new Random();
+            int r = random.Next(0, dataGridView1.Rows[0].Cells.Count);
+            exportAndRun(r);
         }
     }
 }
